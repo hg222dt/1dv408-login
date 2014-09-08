@@ -10,23 +10,24 @@ class HTMLView {
 		$this->HTMLBody = $HTMLBody;
 	}
 	
-	public function echoHTML() {
+	public function echoHTML() 
+	{
 		
-echo "
-<!doctype html>
-<html>
-	<head>
-		<title>Inloggning</title>
-	</head>
-	
-	<body>
-		<h1>Laborationskod hg222aa</h1>
-		$this->HTMLBody
-		
-	</body>
-</html>
-";
-		
+		echo '
+		<!doctype html>
+		<html>
+			<head>
+				<meta charset="utf-8">
+				<title>Inloggning</title>
+			</head>
+			
+			<body>
+				<h1>Laborationskod hg222aa</h1>
+				'.$this->HTMLBody.'
+				
+			</body>
+		</html>
+		';		
 	}
 	
 }

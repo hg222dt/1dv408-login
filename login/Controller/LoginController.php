@@ -15,4 +15,15 @@ class LoginController
 		$this->view = new LoginView($this->login);
 	}
 	
+	
+	public function control()
+	{
+		$retString = "";
+		
+		$retString .= $this->view->showLoginForm();
+		$retString .= $this->view->showdatetime();;
+		
+		return $retString;
+	}
+	
 }

@@ -5,5 +5,7 @@ require_once("Controller/LoginController.php");
 
 $controller = new LoginController();
 
-$htmlView = new HTMLView("Hello, world");
+$htmlBody = $controller->control();
+
+$htmlView = new HTMLView($htmlBody);
 $htmlView->echoHTML();

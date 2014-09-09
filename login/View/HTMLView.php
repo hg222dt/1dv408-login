@@ -5,12 +5,12 @@ class HTMLView {
 	
 	private $HTMLBody ="";
 	
-	public function __construct($HTMLBody) {
+	public function __construct() {
 		
 		$this->HTMLBody = $HTMLBody;
 	}
 	
-	public function echoHTML() 
+	public function echoHTML($HTMLBody) 
 	{
 		
 		echo '
@@ -23,7 +23,7 @@ class HTMLView {
 			
 			<body>
 				<h1>Laborationskod hg222aa</h1>
-				'.$this->HTMLBody.'
+				'.$HTMLBody.'
 				
 			</body>
 		</html>

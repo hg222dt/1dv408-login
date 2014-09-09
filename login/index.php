@@ -7,5 +7,5 @@ $controller = new LoginController();
 
 $htmlBody = $controller->control();
 
-$htmlView = new HTMLView($htmlBody);
-$htmlView->echoHTML();
+$htmlView = new HTMLView();
+$htmlView->echoHTML($htmlBody);

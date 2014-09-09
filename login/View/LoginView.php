@@ -37,7 +37,15 @@ class LoginView
 	//funtion som returnerar aktuellt datum och tid
 	public function showdatetime()
 	{
-		return date("r");
+	    
+	    //kolla så detta funkar PÅ SVENSKA
+	    
+	    //this is sweden!
+	    date_default_timezone_set("Europe/Stockholm");
+        setlocale(LC_ALL, 'sv_SE');
+        
+        //skickar tillbaka en sträng med datum/tid
+        return strftime("%A, den %e %B år %Y. Klockan är [%T]");
 	}
 	
 }

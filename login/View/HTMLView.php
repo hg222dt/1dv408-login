@@ -7,7 +7,6 @@ class HTMLView {
 	
 	public function __construct() {
 		
-		$this->HTMLBody = $HTMLBody;
 	}
 	
 	public function echoHTML($HTMLBody) 

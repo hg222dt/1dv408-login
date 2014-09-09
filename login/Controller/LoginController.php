@@ -21,7 +21,7 @@ class LoginController
 		$retString = "";
 		
 		$retString .= $this->view->showLoginForm();
-		$retString .= $this->view->showdatetime();;
+		$retString .= $this->view->showdatetime();
 		
 		return $retString;
 	}

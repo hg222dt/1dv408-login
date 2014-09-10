@@ -9,6 +9,38 @@ class LoginView
 		$this->login = $login;		
 	}	
 	
+	//funktion som returnerar en bool, ifall användaren har skickat ett formulär
+	public function userWantsToLogin()
+	{
+	    if(isset($_POST["user"]))
+	    {
+	        return true;
+	    }
+	    
+	    return false;
+	}
+	
+	
+	
+	//egenskap som hämtar inskrivet användarnamn från formuläret
+	public function getFormUser()
+	{
+	    
+	    return $_POST["user"];
+	}
+	
+	//egenskap som hämtar inskrivet lösenord från formuläret
+	public function getFormPassword()
+	{
+	    return $_POST["password"];
+	}
+	
+	//egenskap som hämtar användarens svar på om han/hon vill fortsätta vara inloggad
+	public function getFormStayLoggedIn()
+	{
+	    return $_POST["stayLoggedIn"];
+	}
+	
 	
 	//funktion som returnerar ett html-form där användaren kan logga in 
 	public function showLoginForm()
@@ -16,16 +48,16 @@ class LoginView
 		$form = 
 		'
 		<h2>Du är inte inloggad!</h2>
-		<form id="loginForm">
+		<form id="loginForm" method="post">
 			
 			<label>Användare:</label>
-			<input type="text" id="userId" placeholder="Användarnamn" />
+			<input type="text" placeholder="Användarnamn" name="user" />
 			
 			<label>Lösenord:</label>
-			<input type="password" id="password" placeholder="Lösenord" />
+			<input type="password" placeholder="Lösenord" name="password" />
 			
 			<label>Håll mig inloggad:</label>
-			<input type="checkbox" id="stayLoggedIn" />
+			<input type="checkbox" name="stayLoggedIn" />
 			
 			<input type="submit" value="Logga in" />
 		</form>

@@ -37,6 +37,18 @@ class LoginController
 	            $retString .= "Lösenord saknas.";
 	        }
 	        
+	        //kollar så användarnamnet stämmer
+	        else if($this->login->authenticateUser($this->view->getFormUser(), $this->view->getFormPassword()))
+	        {
+	            
+	            //placeholder
+	            $retString .= "Rätt!";
+	        }
+	        else 
+	        {
+	           $retString .= "Felaktigt användarnamn och/eller lösenord"; 
+	        }
+	        
 	    }
     
 		$retString .= $this->view->showLoginForm();

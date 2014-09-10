@@ -10,6 +10,7 @@ class Login
 
 	}
 	
+	//kollar så angiven användare finns med rätt lösenord
 	public function authenticateUser($user, $password)
 	{
 	    if($this->correctUser === $user && $this->correctPassword === $password)

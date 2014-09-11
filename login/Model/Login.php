@@ -16,7 +16,7 @@ class Login
             $userArr = explode(":",trim($existingUser));
             
             //returnerar true om användaren med lösenordet finns i filen
-            if($userArr[0] === $user && $userArr[1] === $password )
+            if($userArr[0] === $user && $userArr[1] === md5($password) )
             {
                 return true;
             }

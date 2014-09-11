@@ -41,12 +41,20 @@ class LoginView
 	    return $_POST["stayLoggedIn"];
 	}
 	
+	//returnerar en bool som svar på om användaren är inloggad eller inte.
+	public function userIsLoggedIn()
+	{
+		if(isset($_SESSION["loggedin"]))
+		{
+			return true;
+		}
+		return false;
+	}
 	
 	//funktion som returnerar ett html-form där användaren kan logga in 
 	public function showLoginForm()
-	{
-		$form = 
-		'
+	{		
+		return '
 		<h2>Du är inte inloggad!</h2>
 		<form id="loginForm" method="post">
 			
@@ -62,8 +70,15 @@ class LoginView
 			<input type="submit" value="Logga in" />
 		</form>
 		';
-		
-		return $form;
+	}
+	
+	public function showLoggedIn()
+	{
+		return '
+		<h2>Du är inloggad!</h2>
+		<p>Inloggningen lyckades</p>
+		<p><a href="?logout">Logga ut</a></p>
+		';
 	}
 	
 	//funtion som returnerar aktuellt datum och tid

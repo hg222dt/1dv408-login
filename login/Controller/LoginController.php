@@ -20,46 +20,64 @@ class LoginController
 	{
 	    
 	    $retString = "";
+		$feedback = "";
+		$userFieldValue = "";
 	 
 	 	if($this->view->userIsLoggedIn())
 		{
-			$retString .= $this->view->showLoggedIn();
+			//om användaren vill logga ut
+			if($this->view->userWantsToLogOut())
+			{
+				$this->view->logOutUser();
+			}
+			else
+			{
+				if($this->view->isFirstPageLoad())
+				{
+					$feedback = "Inloggningen lyckades";
+				}
+				
+				$retString .= $this->view->showLoggedIn($feedback);
+			}
+			
 		}
 	    
 		else
 		{
-			$retString .= $this->view->showLoginForm();
-			
+
 		    //om användaren försöker logga in 
 		    if($this->view->userWantsToLogin())
 		    {
 		        //kollar så användaren har skrivit ett användarnamn
 		        if($this->view->getFormUser() === "")
 		        {
-		            $retString .= "Användarnamn saknas.";
+		            $feedback = "Användarnamn saknas.";
 		        }
 		        
 		        //kollar så användaren har skrivit ett lösenord
 		        else if($this->view->getFormPassword() === "")
 		        {
-		            $retString .= "Lösenord saknas.";
+		            $feedback = "Lösenord saknas.";
+					
+					$userFieldValue = $this->view->getFormUser();
 		        }
 		        
 		        //kollar så användarnamnet stämmer
 		        else if($this->login->authenticateUser($this->view->getFormUser(), $this->view->getFormPassword()))
 		        {
-		        	$retString .= $this->view->showLoggedIn();
-		        	
-		        	//nu blir användaren inloggad
-		            session_start();
-					$_SESSION["loggedin"] = true;
+					//nu blir användaren inloggad
+		            $this->view->logInUser();
 		        }
 		        else 
 		        {
-		           $retString .= "Felaktigt användarnamn och/eller lösenord"; 
+		           $feedback = "Felaktigt användarnamn och/eller lösenord"; 
+				   
+				   $userFieldValue = $this->view->getFormUser();
 		        }
 		        
 		    }
+			
+			$retString .= $this->view->showLoginForm($feedback, $userFieldValue);
 		}
 		
 		

@@ -20,7 +20,6 @@ class Login
             {
                 return true;
             }
-            
         }
         return false;
 

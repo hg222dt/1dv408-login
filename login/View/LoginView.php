@@ -20,6 +20,15 @@ class LoginView
 	    return false;
 	}
 	
+	public function userWantsToLogOut()
+	{
+		if(isset($_GET["logout"]))
+		{
+			return true;
+		}
+		return false;
+	}
+	
 	
 	
 	//egenskap som hämtar inskrivet användarnamn från formuläret
@@ -44,22 +53,53 @@ class LoginView
 	//returnerar en bool som svar på om användaren är inloggad eller inte.
 	public function userIsLoggedIn()
 	{
-		if(isset($_SESSION["loggedin"]))
+		session_start();
+		
+		if(isset($_SESSION["loggedIn"]))
 		{
 			return true;
 		}
 		return false;
 	}
 	
+	public function logInUser()
+	{
+		session_start();
+		
+		$_SESSION["loggedIn"] = true;
+		$_SESSION["firstPageLoad"] = true;
+		
+		header("location:index.php");	
+	}
+	
+	public function isFirstPageLoad()
+	{
+		if($_SESSION["firstPageLoad"])
+		{
+			$_SESSION["firstPageLoad"] = false;
+			return true;
+		}
+		return false;
+	}
+	
+	public function logOutUser()
+	{
+		session_Start();
+		$_SESSION["loggedIn"] = null;
+		header("location:index.php");
+		
+	}
+
 	//funktion som returnerar ett html-form där användaren kan logga in 
-	public function showLoginForm()
+	public function showLoginForm($feedback, $userFieldValue)
 	{		
 		return '
 		<h2>Du är inte inloggad!</h2>
+		<p>' .$feedback. '</p>
 		<form id="loginForm" method="post">
 			
 			<label>Användare:</label>
-			<input type="text" placeholder="Användarnamn" name="user" />
+			<input type="text" placeholder="Användarnamn" name="user" value="'.$userFieldValue.'" />
 			
 			<label>Lösenord:</label>
 			<input type="password" placeholder="Lösenord" name="password" />
@@ -72,11 +112,11 @@ class LoginView
 		';
 	}
 	
-	public function showLoggedIn()
+	public function showLoggedIn($feedback)
 	{
 		return '
 		<h2>Du är inloggad!</h2>
-		<p>Inloggningen lyckades</p>
+		<p>'.$feedback.'</p>
 		<p><a href="?logout">Logga ut</a></p>
 		';
 	}

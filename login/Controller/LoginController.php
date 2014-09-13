@@ -29,10 +29,11 @@ class LoginController
 			if($this->view->userWantsToLogOut())
 			{
 				$this->view->logOutUser();
+				
 			}
 			else
 			{
-				if($this->view->isFirstPageLoad())
+				if($this->view->isFirstLoadAfterLogin())
 				{
 					$feedback = "Inloggningen lyckades";
 				}
@@ -44,7 +45,6 @@ class LoginController
 	    
 		else
 		{
-
 		    //om användaren försöker logga in 
 		    if($this->view->userWantsToLogin())
 		    {
@@ -77,6 +77,12 @@ class LoginController
 		        
 		    }
 			
+			//om användaren precis har loggat ut
+			if($this->view->isFirstLoadAfterLogout())
+			{
+				$feedback = "Du har nu loggat ut.";
+			}
+		
 			$retString .= $this->view->showLoginForm($feedback, $userFieldValue);
 		}
 		

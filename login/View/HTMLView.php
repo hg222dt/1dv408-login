@@ -16,7 +16,7 @@ class HTMLView {
 		<!doctype html>
 		<html>
 			<head>
-				<meta charset="utf-8">
+				<meta charset="UTF-8">
 				<title>Inloggning</title>
 			</head>
 			

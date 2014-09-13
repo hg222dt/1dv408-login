@@ -4,8 +4,7 @@ class Login
 {
 	//kollar så angiven användare finns med rätt lösenord
 	public function authenticateUser($user, $password)
-	{
-	    
+	{		
 	    //filen där alla tusentals användare och lösenord sparas
         $existingUsers = file("users.txt");
 

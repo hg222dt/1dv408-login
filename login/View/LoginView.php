@@ -67,16 +67,16 @@ class LoginView
 		session_start();
 		
 		$_SESSION["loggedIn"] = true;
-		$_SESSION["firstPageLoad"] = true;
+		$_SESSION["firstLoadAfterLogin"] = true;
 		
 		header("location:index.php");	
 	}
 	
-	public function isFirstPageLoad()
+	public function isFirstLoadAfterLogin()
 	{
-		if($_SESSION["firstPageLoad"])
+		if($_SESSION["firstLoadAfterLogin"])
 		{
-			$_SESSION["firstPageLoad"] = false;
+			$_SESSION["firstLoadAfterLogin"] = false;
 			return true;
 		}
 		return false;
@@ -86,8 +86,19 @@ class LoginView
 	{
 		session_Start();
 		$_SESSION["loggedIn"] = null;
-		header("location:index.php");
+		$_SESSION["firstLoadAfterLogout"] = true;
 		
+		header("location:index.php");	
+	}
+	
+	public function isFirstLoadAfterLogout()
+	{
+		if(isset($_SESSION["firstLoadAfterLogout"]) && $_SESSION["firstLoadAfterLogout"])
+		{
+			$_SESSION["firstLoadAfterLogout"] = false;
+			return true;
+		}
+		return false;
 	}
 
 	//funktion som returnerar ett html-form där användaren kan logga in 
@@ -126,7 +137,7 @@ class LoginView
 	{
 	    //this is sweden!
 	    date_default_timezone_set("Europe/Stockholm");
-        setlocale(LC_ALL, "Swedish_Sweden.1252");
+        setlocale(LC_TIME, 'sv_SE'); 
 
         //skickar tillbaka en sträng med datum/tid
         return strftime("%A, den %d %B år %Y. Klockan är [%H:%M:%S]");

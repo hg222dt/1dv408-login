@@ -36,11 +36,16 @@ class LoginController
 				if($this->view->isFirstLoadAfterLogin())
 				{
 					$feedback = "Inloggningen lyckades";
+					
+					if($this->view->loginCookieExists())
+					{
+						$feedback .= " och vi kommer ihåg dig nästa gång.";
+					}
+
 				}
 				
 				$retString .= $this->view->showLoggedIn($feedback);
-			}
-			
+			}	
 		}
 	    
 		else
@@ -74,7 +79,6 @@ class LoginController
 				   
 				   $userFieldValue = $this->view->getFormUser();
 		        }
-		        
 		    }
 			
 			//om användaren precis har loggat ut

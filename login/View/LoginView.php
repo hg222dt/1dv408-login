@@ -12,8 +12,9 @@ class LoginView
 	//funktion som returnerar en bool, ifall användaren har skickat ett formulär
 	public function userWantsToLogin()
 	{
+
 	    if(isset($_POST["user"]))
-	    {
+	    {		
 	        return true;
 	    }
 	    
@@ -43,33 +44,50 @@ class LoginView
 	{
 	    return $_POST["password"];
 	}
-	
-	//egenskap som hämtar användarens svar på om han/hon vill fortsätta vara inloggad
-	public function getFormStayLoggedIn()
-	{
-	    return $_POST["stayLoggedIn"];
-	}
-	
+
 	//returnerar en bool som svar på om användaren är inloggad eller inte.
 	public function userIsLoggedIn()
 	{
 		session_start();
 		
+		if(isset($_COOKIE["user"]) && isset($_COOKIE["password"]))
+		{
+			if($this->login->authenticateUser($_COOKIE["user"], $_COOKIE["password"]))
+			{
+				$_SESSION["loggedIn"] = true;
+			}
+		}
+		
 		if(isset($_SESSION["loggedIn"]))
 		{
 			return true;
 		}
+		
 		return false;
 	}
 	
 	public function logInUser()
 	{
-		session_start();
-		
 		$_SESSION["loggedIn"] = true;
 		$_SESSION["firstLoadAfterLogin"] = true;
 		
+		//om användaren vill spara inloggningen 
+		if(isset($_POST["stayLoggedIn"]) && $_POST["stayLoggedIn"] === "checked")
+		{	
+			setcookie("user", $this->getFormUser(), -1);
+			setcookie("password", $this->getFormPassword(), -1);
+		}
+		
 		header("location:index.php");	
+	}
+	
+	public function loginCookieExists()
+	{
+		if(isset($_COOKIE["user"]) && isset($_COOKIE["password"]))
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	public function isFirstLoadAfterLogin()
@@ -107,7 +125,7 @@ class LoginView
 		return '
 		<h2>Du är inte inloggad!</h2>
 		<p>' .$feedback. '</p>
-		<form id="loginForm" method="post">
+		<form id="loginForm" method="post" action="index.php">
 			
 			<label>Användare:</label>
 			<input type="text" placeholder="Användarnamn" name="user" value="'.$userFieldValue.'" />
@@ -116,7 +134,7 @@ class LoginView
 			<input type="password" placeholder="Lösenord" name="password" />
 			
 			<label>Håll mig inloggad:</label>
-			<input type="checkbox" name="stayLoggedIn" />
+			<input type="checkbox" name="stayLoggedIn" value="checked" />
 			
 			<input type="submit" value="Logga in" />
 		</form>
@@ -140,8 +158,7 @@ class LoginView
         setlocale(LC_TIME, 'sv_SE'); 
 
         //skickar tillbaka en sträng med datum/tid
-        return strftime("%A, den %d %B år %Y. Klockan är [%H:%M:%S]");
+        return utf8_encode(strftime("%A, den %d %B år %Y. Klockan är [%H:%M:%S]"));
         
 	}
-	
 }

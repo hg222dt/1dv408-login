@@ -1,27 +1,56 @@
 <?php
 
+namespace model;
+
+require_once("Model/SessionStorage.php");
+
 class Login
 {
-	//kollar så angiven användare finns med rätt lösenord
-	public function authenticateUser($user, $password)
-	{		
-	    //filen där alla tusentals användare och lösenord sparas
-        $existingUsers = file("users.txt");
+	private $loginSession;
+	
+	public function __construct()
+	{
+		$this->loginSession = new \model\SessionStorage();
+	}
+	
+	public function userIsLoggedIn()
+	{
 
-        //kollar varje rad i filen med användare:lösenord
+		return false;
+	}
+	
+	public function getUserName()
+	{
+		return $this->loginSession->getSessionUser();
+	}
+	
+	public function authenticateUser($user, $password)
+	{
+		$existingUsers = file("users.txt");
+		
+		$this->loginSession->setSessionUser($user);
+		
+		if($user === "")
+		{
+			return "Användarnamn saknas";
+		}
+
+		else if($password->getPassword() === "")
+		{
+			return "Lösenord saknas";
+		}
+		
+		//kollar varje rad i filen med användare:lösenord
         foreach($existingUsers as $existingUser)
         {
             //delar upp raderna 
             $userArr = explode(":",trim($existingUser));
             
             //returnerar true om användaren med lösenordet finns i filen
-            if($userArr[0] === $user && $userArr[1] === $password )
+            if($userArr[0] === $user && $userArr[1] === $password->getPassword() )
             {
-                return true;
+                return "Inloggningen lyckades";
             }
         }
-        return false;
-
 	}
-	
 }

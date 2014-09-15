@@ -5,96 +5,50 @@ require_once("View/LoginView.php");
 
 class LoginController
 {
-	private $view; 
-	private $login;
-	
-	
 	public function __construct()
 	{
-		$this->login = new Login();
+		$this->login = new \model\Login();
 		$this->view = new LoginView($this->login);
 	}
 	
-	
 	public function control()
 	{
-	    
-	    $retString = "";
-		$feedback = "";
-		$userFieldValue = "";
-	 
-	 	if($this->view->userIsLoggedIn() || $this->login->authenticateUser($this->view->getCookieUser(), $this->view->getCookiePassword()))
+		$feedback = ""; 
+		//användaren är inloggad
+		if($this->login->userIsLoggedIn())
 		{
-			//om användaren vill logga ut
-			if($this->view->userWantsToLogOut())
+			//användaren vill logga ut
+			if($this->view->userLogsOut())
 			{
-				$this->view->logOutUser();
+				$this->login->logOutUser();
+				return $this->view->showLoginForm($feedback);
 			}
-			
 			else
 			{
-				if($this->view->isFirstLoadSinceLogin())
-				{
-					$feedback = "Inloggningen lyckades";
-					
-					if($this->view->loginCookieExists())
-					{
-						$feedback .= " och vi kommer ihåg dig nästa gång.";
-					}
-
-				}
-				
-				$retString .= $this->view->showLoggedIn($feedback);
+				return $this->view->showLoggedInPage();	
 			}	
+			
 		}
-	    
+		
+		//användaren är inte inloggad
 		else
 		{
-		    //om användaren försöker logga in 
-		    if($this->view->userWantsToLogin())
-		    {
-		        //kollar så användaren har skrivit ett användarnamn
-		        if($this->view->getFormUser() === "")
-		        {
-		            $feedback = "Användarnamn saknas.";
-		        }
-		        
-		        //kollar så användaren har skrivit ett lösenord
-		        else if($this->view->getFormPassword() === "")
-		        {
-		            $feedback = "Lösenord saknas.";
-					
-					$userFieldValue = $this->view->getFormUser();
-		        }
-		        
-		        //kollar så användarnamnet stämmer
-		        else if($this->login->authenticateUser($this->view->getFormUser(), md5($this->view->getFormPassword())))
-		        {
-					//nu blir användaren inloggad
-		            $this->view->logInUser();
-		        }
-		        else 
-		        {
-		           $feedback = "Felaktigt användarnamn och/eller lösenord"; 
-				   
-				   $userFieldValue = $this->view->getFormUser();
-		        }
-		    }
-			
-			//om användaren precis har loggat ut
-			if($this->view->isFirstLoadSinceLogout())
+			//användaren vill logga in
+			if($this->view->userLogsIn())
 			{
-				$feedback = "Du har nu loggat ut.";
-			}
-		
-			$retString .= $this->view->showLoginForm($feedback, $userFieldValue);
+				$formUser = $this->view->getFormUser();
+				$formPassword = $this->view->getFormPassword();
+				
+				$feedback = $this->login->authenticateUser($formUser, $formPassword);
+				
+				//om användaren har rätt lösenord
+				if($this->login->userIsLoggedIn())
+				{
+					return $this->view->showLoggedInPage();
+				}
+				
+			}	
+			return $this->view->showLoginForm($feedback);	
 		}
-		
-		
-		//datum ska alltid visas
-		$retString .= $this->view->showdatetime();
-    
-		return $retString;
 	}
-	
 }

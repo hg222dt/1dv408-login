@@ -1,12 +1,18 @@
 <?php
 
+require_once("SessionStorage.php");
+require_once("CookieStorage.php");
+
 class LoginView
 {
 	private $login;
+	private $sessionStorage;
 	 
 	public function __construct($login)
 	{
-		$this->login = $login;		
+		$this->login = $login;	
+		$this->sessionStorage = new SessionStorage();
+		$this->cookieStorage = new CookieStorage();
 	}	
 	
 	//funktion som returnerar en bool, ifall användaren har skickat ett formulär
@@ -30,8 +36,6 @@ class LoginView
 		return false;
 	}
 	
-	
-	
 	//egenskap som hämtar inskrivet användarnamn från formuläret
 	public function getFormUser()
 	{
@@ -45,37 +49,35 @@ class LoginView
 	    return $_POST["password"];
 	}
 
+    //hämta user från cookie
+    public function getCookieUser()
+    {
+        $this->cookieStorage->getUser();
+    }
+    
+    //hämta password från cookie
+    public function getCookiePassword()
+    {
+        $this->cookieStorage->getPassword();
+    }
+
 	//returnerar en bool som svar på om användaren är inloggad eller inte.
 	public function userIsLoggedIn()
 	{
-		session_start();
-		
-		if(isset($_COOKIE["user"]) && isset($_COOKIE["password"]))
-		{
-			if($this->login->authenticateUser($_COOKIE["user"], $_COOKIE["password"]))
-			{
-				$_SESSION["loggedIn"] = true;
-			}
-		}
-		
-		if(isset($_SESSION["loggedIn"]))
-		{
-			return true;
-		}
-		
-		return false;
+		//kollar om det finns en login-session
+		return $this->sessionStorage->loginSessionExists();
 	}
 	
 	public function logInUser()
 	{
-		$_SESSION["loggedIn"] = true;
-		$_SESSION["firstLoadAfterLogin"] = true;
-		
-		//om användaren vill spara inloggningen 
+	    //skapa ny login-session
+        $this->sessionStorage->createLoginSession();
+        
+		//om användaren vill spara inloggningen i en cookie
 		if(isset($_POST["stayLoggedIn"]) && $_POST["stayLoggedIn"] === "checked")
-		{	
-			setcookie("user", $this->getFormUser(), -1);
-			setcookie("password", $this->getFormPassword(), -1);
+		{	    
+		    //skapa nya cookies med användaruppgifter
+            $this->cookieStorage->setCookie($this->getFormUser(), $this->getFormPassword());
 		}
 		
 		header("location:index.php");	
@@ -83,40 +85,24 @@ class LoginView
 	
 	public function loginCookieExists()
 	{
-		if(isset($_COOKIE["user"]) && isset($_COOKIE["password"]))
-		{
-			return true;
-		}
-		return false;
+	    return $this->cookieStorage->loginCookieExists();
 	}
 	
-	public function isFirstLoadAfterLogin()
+	public function isFirstLoadSinceLogin()
 	{
-		if($_SESSION["firstLoadAfterLogin"])
-		{
-			$_SESSION["firstLoadAfterLogin"] = false;
-			return true;
-		}
-		return false;
+        return $this->sessionStorage->firstLoadSinceLogin();
 	}
 	
 	public function logOutUser()
 	{
-		session_Start();
-		$_SESSION["loggedIn"] = null;
-		$_SESSION["firstLoadAfterLogout"] = true;
+        $this->sessionStorage->removeLoginSession();
 		
 		header("location:index.php");	
 	}
 	
-	public function isFirstLoadAfterLogout()
+	public function isFirstLoadSinceLogout()
 	{
-		if(isset($_SESSION["firstLoadAfterLogout"]) && $_SESSION["firstLoadAfterLogout"])
-		{
-			$_SESSION["firstLoadAfterLogout"] = false;
-			return true;
-		}
-		return false;
+		return $this->sessionStorage->firstLoadSinceLogout();
 	}
 
 	//funktion som returnerar ett html-form där användaren kan logga in 

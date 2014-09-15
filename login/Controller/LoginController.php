@@ -23,17 +23,17 @@ class LoginController
 		$feedback = "";
 		$userFieldValue = "";
 	 
-	 	if($this->view->userIsLoggedIn())
+	 	if($this->view->userIsLoggedIn() || $this->login->authenticateUser($this->view->getCookieUser(), $this->view->getCookiePassword()))
 		{
 			//om användaren vill logga ut
 			if($this->view->userWantsToLogOut())
 			{
 				$this->view->logOutUser();
-				
 			}
+			
 			else
 			{
-				if($this->view->isFirstLoadAfterLogin())
+				if($this->view->isFirstLoadSinceLogin())
 				{
 					$feedback = "Inloggningen lyckades";
 					
@@ -68,7 +68,7 @@ class LoginController
 		        }
 		        
 		        //kollar så användarnamnet stämmer
-		        else if($this->login->authenticateUser($this->view->getFormUser(), $this->view->getFormPassword()))
+		        else if($this->login->authenticateUser($this->view->getFormUser(), md5($this->view->getFormPassword())))
 		        {
 					//nu blir användaren inloggad
 		            $this->view->logInUser();
@@ -82,7 +82,7 @@ class LoginController
 		    }
 			
 			//om användaren precis har loggat ut
-			if($this->view->isFirstLoadAfterLogout())
+			if($this->view->isFirstLoadSinceLogout())
 			{
 				$feedback = "Du har nu loggat ut.";
 			}

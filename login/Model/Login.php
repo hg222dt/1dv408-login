@@ -15,13 +15,23 @@ class Login
 	
 	public function userIsLoggedIn()
 	{
-
+		if($this->loginSession->loggedInSessionExists())
+		{
+			return true;
+		}
 		return false;
 	}
 	
 	public function getUserName()
 	{
 		return $this->loginSession->getSessionUser();
+	}
+	
+	public function logOutUser()
+	{
+		$this->loginSession->removeLoggedInSession();
+		
+		return "Du har nu loggat ut";
 	}
 	
 	public function authenticateUser($user, $password)
@@ -49,8 +59,10 @@ class Login
             //returnerar true om användaren med lösenordet finns i filen
             if($userArr[0] === $user && $userArr[1] === $password->getPassword() )
             {
+            	$this->loginSession->setSessionAsLoggedIn();
                 return "Inloggningen lyckades";
             }
+			return "Felaktigt användarnamn och/eller lösenord.";
         }
 	}
 }

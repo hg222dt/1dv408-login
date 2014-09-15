@@ -22,4 +22,21 @@ class SessionStorage
 	{
 		$_SESSION["user"] = $user;
 	}
+	
+	public function loggedInSessionExists()
+	{
+		return isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true;
+	}
+	
+	public function setSessionAsLoggedIn()
+	{
+		$_SESSION["loggedIn"] = true;
+	}	
+	
+	public function removeLoggedInSession()
+	{
+		$_SESSION["user"] = "";
+		$_SESSION["loggedIn"] = false;
+	}
+	
 }

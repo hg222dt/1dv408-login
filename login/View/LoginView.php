@@ -5,10 +5,13 @@ require_once("Model/password.php");
 class LoginView
 {
 	public $login;
+	public $cookieStorage;
+	
 	
 	public function __construct($login)
 	{
 		$this->login = $login;
+		$this->cookieStorage = new CookieStorage();
 	}
 	
 	public function getFormUser()
@@ -31,6 +34,14 @@ class LoginView
 		return false;
 	}
 
+	public function userLogsOut()
+	{
+		if(isset($_GET["logout"]))
+		{
+			return true;
+		}
+		return false;
+	}
 
 	//funtion som returnerar aktuellt datum och tid
 	public function showdatetime()
@@ -44,11 +55,11 @@ class LoginView
         
 	}
 		
-	public function showLoggedInPage()
+	public function showLoggedInPage($feedback)
 	{
 		return '
 		<h2>Du är inloggad!</h2>
-		<p></p>
+		<p>'.$feedback.'</p>
 		<p><a href="?logout">Logga ut</a></p>
 		'
 		.$this->showdatetime();

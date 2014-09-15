@@ -20,12 +20,12 @@ class LoginController
 			//användaren vill logga ut
 			if($this->view->userLogsOut())
 			{
-				$this->login->logOutUser();
+				$feedback = $this->login->logOutUser();
 				return $this->view->showLoginForm($feedback);
 			}
 			else
 			{
-				return $this->view->showLoggedInPage();	
+				return $this->view->showLoggedInPage($feedback);	
 			}	
 			
 		}
@@ -44,7 +44,7 @@ class LoginController
 				//om användaren har rätt lösenord
 				if($this->login->userIsLoggedIn())
 				{
-					return $this->view->showLoggedInPage();
+					return $this->view->showLoggedInPage($feedback);
 				}
 				
 			}	

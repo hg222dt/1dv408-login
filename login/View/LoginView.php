@@ -1,6 +1,6 @@
 <?php
 
-require_once("Model/password.php");
+require_once("Model/Password.php");
 require_once("View/CookieStorage.php");
 
 class LoginView

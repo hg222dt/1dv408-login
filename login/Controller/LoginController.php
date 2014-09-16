@@ -14,6 +14,7 @@ class LoginController
 	public function control()
 	{
 		$feedback = ""; 
+		
 		//användaren är inloggad
 		if($this->login->userIsLoggedIn())
 		{

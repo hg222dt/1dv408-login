@@ -81,9 +81,13 @@ class LoginView
 	    //this is sweden!
 	    date_default_timezone_set("Europe/Stockholm");
         setlocale(LC_TIME, 'sv_SE'); 
-
-        //skickar tillbaka en sträng med datum/tid
-        return utf8_encode(strftime("%A, den %d %B år %Y. Klockan är [%H:%M:%S]"));
+		
+		//fixa utf-8-problem vid åäö, och stor första bokstav.
+		$weekday = ucfirst(utf8_encode(strftime("%A")));
+		$month = ucfirst(utf8_encode(strftime("%B")));
+		
+        //skickar tillbaka en sträng med datum/tid        
+        return strftime($weekday.", den %d ".$month." år %Y. Klockan är [%H:%M:%S]");
         
 	}
 		

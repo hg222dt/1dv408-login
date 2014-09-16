@@ -1,6 +1,7 @@
 <?php
 
 require_once("Model/password.php");
+require_once("View/CookieStorage.php");
 
 class LoginView
 {
@@ -11,7 +12,7 @@ class LoginView
 	public function __construct($login)
 	{
 		$this->login = $login;
-		$this->cookieStorage = new CookieStorage();
+		$this->cookieStorage = new \view\CookieStorage();
 	}
 	
 	public function getFormUser()
@@ -24,6 +25,37 @@ class LoginView
 		$FormPassword = new \Model\Password($_POST["password"]);
 		return $FormPassword;
 	}
+	
+	public function getFormStayLoggedIn()
+	{
+		if(isset($_POST["stayLoggedIn"]))
+		{
+			$this->cookieStorage->setNewLoginCookies($this->getFormUser(), $this->getFormPassword());
+			return true;
+		}
+		return false;
+	}
+	
+	public function userHasCookies()
+	{
+		return $this->cookieStorage->userHasCookies();
+	}
+	
+	public function getCookieUser()
+	{
+		return $this->cookieStorage->getUser();
+	}
+	
+	public function getCookiePassword()
+	{
+		return $this->cookieStorage->getPassword();
+	}
+	
+	public function getCookieExpiration()
+	{
+		return $this->cookieStorage->getExpiration();
+	}
+	
 	
 	public function userLogsIn()
 	{

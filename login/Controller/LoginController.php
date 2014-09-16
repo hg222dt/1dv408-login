@@ -27,19 +27,30 @@ class LoginController
 			{
 				return $this->view->showLoggedInPage($feedback);	
 			}	
-			
 		}
 		
 		//användaren är inte inloggad
 		else
 		{
+			if($this->view->userHasCookies())
+			{
+				$feedback = $this->login->authenticateUserWithCookies($this->view->getCookieUser(), $this->view->getCookiePassword());
+				if($this->login->userIsLoggedIn())
+				{
+					return $this->view->showLoggedInPage($feedback);
+				}
+			}
+						
 			//användaren vill logga in
 			if($this->view->userLogsIn())
 			{
 				$formUser = $this->view->getFormUser();
 				$formPassword = $this->view->getFormPassword();
+				$formStayLoggedIn = $this->view->getFormStayLoggedIn();
 				
-				$feedback = $this->login->authenticateUser($formUser, $formPassword);
+				$cookieExpiration = $this->view->getCookieExpiration();
+								
+				$feedback = $this->login->authenticateUser($formUser, $formPassword, $formStayLoggedIn, $cookieExpiration);
 				
 				//om användaren har rätt lösenord
 				if($this->login->userIsLoggedIn())

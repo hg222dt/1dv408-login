@@ -14,9 +14,13 @@ class Login
 	}
 	
 	public function userIsLoggedIn()
-	{
+	{	
 		if($this->loginSession->loggedInSessionExists())
 		{
+			if($this->loginSession->realSessionUser() === false)
+			{
+				return false;
+			}
 			return true;
 		}
 		return false;

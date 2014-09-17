@@ -91,6 +91,9 @@ class Login
 			
 			
 		}
+		
+		//kakorna fungerade inte av någon anledning. Tar bort cookies och ger feedback
+		
 		return "Felaktig information i cookie";
 		
 	}

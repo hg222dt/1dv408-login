@@ -7,7 +7,7 @@ class CookieStorage
 	private $expiration;
 	public function __construct()
 	{
-		//en månad from nu.
+		//en månad f.r.o.m nu.
 		$this->expiration = time()+(60*60*24*30);
 	}
 	

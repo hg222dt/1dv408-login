@@ -38,4 +38,11 @@ class CookieStorage
 	{
 		return $this->expiration;
 	}
+	
+	//funktion som sätter expiration-tiden till en sekund sedan, för att förstöra kakan.
+	public function removeCookies()
+	{
+		setcookie("user",null,-1);	
+		setcookie("password",null,-1);	
+	}
 }

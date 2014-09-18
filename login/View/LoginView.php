@@ -56,6 +56,10 @@ class LoginView
 		return $this->cookieStorage->getExpiration();
 	}
 	
+	public function removeCookies()
+	{
+		$this->cookieStorage->removeCookies();
+	}
 	
 	public function userLogsIn()
 	{

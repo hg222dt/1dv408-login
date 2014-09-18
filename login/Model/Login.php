@@ -67,6 +67,8 @@ class Login
 				
 				if($stayLoggedIn)
 				{
+					$this->removeOldSavedCookies($user, $password);
+					
 					$cookieUsers = fopen("cookieUsers.txt", "a");
 					fwrite($cookieUsers, $user.":".$password->getPassword().":".$expiration."\n");
 					
@@ -92,13 +94,26 @@ class Login
 				$this->loginSession->setSessionAsLoggedIn();
 				return "Inloggning lyckades via cookies";
 			}
-			
-			
 		}
 		
-		//kakorna fungerade inte av någon anledning. Tar bort cookies och ger feedback
-		
 		return "Felaktig information i cookie";
+	}
+	
+	public function removeOldSavedCookies($user, $password)
+	{
+		$existingUsers = file("cookieUsers.txt");
+		$newFile = fopen("newFile.txt","a");
 		
+		foreach($existingUsers as $existingUser)
+		{
+			//delar upp raderna 
+            $userArr = explode(":",trim($existingUser));
+			
+			if($userArr[0] !== $user && $userArr[1] !== $password)
+			{
+				fwrite($newFile, $existingUser."\n");
+			}
+		}
+		rename("newFile.txt", "cookieUsers.txt");
 	}
 }

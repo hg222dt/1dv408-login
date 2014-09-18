@@ -22,6 +22,7 @@ class LoginController
 			if($this->view->userLogsOut())
 			{
 				$feedback = $this->login->logOutUser();
+				$this->view->removeCookies();
 				return $this->view->showLoginForm($feedback);
 			}
 			else
@@ -39,6 +40,10 @@ class LoginController
 				if($this->login->userIsLoggedIn())
 				{
 					return $this->view->showLoggedInPage($feedback);
+				}
+				else
+				{
+					$this->view->removeCookies();
 				}
 			}
 						

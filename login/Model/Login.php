@@ -92,6 +92,7 @@ class Login
 			if($userArr[0] === $user && $userArr[1] === $password && $userArr[2] > time())
 			{
 				$this->loginSession->setSessionAsLoggedIn();
+				$this->loginSession->setSessionUser($user);
 				return "Inloggning lyckades via cookies";
 			}
 		}

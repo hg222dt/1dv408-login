@@ -51,12 +51,11 @@ class LoginController
 			}
 						
 			//användaren vill logga in
-			if($this->view->userLogsIn())
+			else if($this->view->userLogsIn())
 			{
 				$formUser = $this->view->getFormUser();
 				$formPassword = $this->view->getFormPassword();
 				$formStayLoggedIn = $this->view->getFormStayLoggedIn();
-				
 				$cookieExpiration = $this->view->getCookieExpiration();
 								
 				$feedback = $this->login->authenticateUser($formUser, $formPassword, $formStayLoggedIn, $cookieExpiration);
@@ -67,8 +66,16 @@ class LoginController
 					$this->view->showLoggedInPage($feedback);
 				}
 				
+				else
+				{
+					$this->view->showLoginForm($feedback);
+				}	
+			}
+			
+			else
+			{
+				$this->view->showLoginForm($feedback);
 			}	
-			$this->view->showLoginForm($feedback);	
 		}
 	}
 }

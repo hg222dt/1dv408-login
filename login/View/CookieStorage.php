@@ -5,6 +5,10 @@ namespace view;
 class CookieStorage
 {
 	private $expiration;
+	
+	private $cookieUser = "user";
+	private $cookiePassword = "password";
+	
 	public function __construct()
 	{
 		//en månad f.r.o.m nu.
@@ -13,13 +17,13 @@ class CookieStorage
 	
 	public function setNewLoginCookies($user, $password)
 	{
-		setcookie("user", $user, $this->expiration);
-		setcookie("password",$password->getPassword(), $this->expiration);
+		setcookie($this->cookieUser, $user, $this->expiration);
+		setcookie($this->cookiePassword,$password->getPassword(), $this->expiration);
 	}
 	
 	public function userHasCookies()
 	{
-		if(isset($_COOKIE["user"]) && isset($_COOKIE["password"]))
+		if(isset($_COOKIE[$this->cookieUser]) && isset($_COOKIE[$this->cookiePassword]))
 		{
 			return true;
 		}
@@ -28,11 +32,11 @@ class CookieStorage
 	
 	public function getUser()
 	{
-		return $_COOKIE["user"];
+		return $_COOKIE[$this->cookieUser];
 	}
 	public function getPassword()
 	{
-		return $_COOKIE["password"];
+		return $_COOKIE[$this->cookiePassword];
 	}
 	public function getExpiration()
 	{
@@ -42,7 +46,7 @@ class CookieStorage
 	//funktion som sätter expiration-tiden till en sekund sedan, för att förstöra kakan.
 	public function removeCookies()
 	{
-		setcookie("user",null,-1);	
-		setcookie("password",null,-1);	
+		setcookie($this->cookieUser,null,-1);	
+		setcookie($this->cookiePassword,null,-1);	
 	}
 }

@@ -102,7 +102,7 @@ class LoginView
 	public function showLoggedInPage($feedback)
 	{
 		$body = '
-		<h2>Du är inloggad!</h2>
+		<h2>'.$this->login->getUserName().' är inloggad</h2>
 		<p>'.$feedback.'</p>
 		<p><a href="?logout">Logga ut</a></p>
 		'
@@ -118,7 +118,7 @@ class LoginView
 	public function showLoginForm($feedback)
 	{		
 		$body = ' 
-		<h2>Du är inte inloggad!</h2>
+		<h2>Du är inte inloggad</h2>
 		<p>'.$feedback.'</p>
 		<form id="loginForm" method="post" action="index.php">
 			

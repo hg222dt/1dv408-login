@@ -1,18 +1,22 @@
 <?php
 
+namespace view;
+
 require_once("Model/Password.php");
 require_once("View/CookieStorage.php");
+require_once("View/HTMLView.php");
 
 class LoginView
 {
-	public $login;
-	public $cookieStorage;
-	
+	private $login;
+	private $cookieStorage;
+	private $html; 
 	
 	public function __construct($login)
 	{
 		$this->login = $login;
 		$this->cookieStorage = new \view\CookieStorage();
+		$this->html = new \view\HTMLView();
 	}
 	
 	public function getFormUser()
@@ -97,20 +101,23 @@ class LoginView
 		
 	public function showLoggedInPage($feedback)
 	{
-		return '
+		$body = '
 		<h2>Du är inloggad!</h2>
 		<p>'.$feedback.'</p>
 		<p><a href="?logout">Logga ut</a></p>
 		'
 		.$this->showdatetime();
 		;
+		
+		$this->html->showHTML($body);
+		
 	}
 	
 	
 	
 	public function showLoginForm($feedback)
 	{		
-		return '
+		$body = ' 
 		<h2>Du är inte inloggad!</h2>
 		<p>'.$feedback.'</p>
 		<form id="loginForm" method="post" action="index.php">
@@ -129,6 +136,8 @@ class LoginView
 		'
 		.$this->showdatetime();
 		;
+		
+		$this->html->showHTML($body);
 	}
 	
 }

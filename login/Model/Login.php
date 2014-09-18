@@ -67,7 +67,7 @@ class Login
 				
 				if($stayLoggedIn)
 				{
-					$this->removeOldSavedCookies($user, $password);
+					$this->removeCookieUserFromFile($user, $password);
 					
 					$cookieUsers = fopen("cookieUsers.txt", "a");
 					fwrite($cookieUsers, $user.":".$password->getPassword().":".$expiration."\n");
@@ -99,7 +99,7 @@ class Login
 		return "Felaktig information i cookie";
 	}
 	
-	public function removeOldSavedCookies($user, $password)
+	public function removeCookieUserFromFile($user, $password)
 	{
 		$existingUsers = file("cookieUsers.txt");
 		$newFile = fopen("newFile.txt","a");

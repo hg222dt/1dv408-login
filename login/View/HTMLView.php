@@ -1,5 +1,6 @@
 <?php
 
+namespace view;
 	
 class HTMLView {
 	
@@ -9,7 +10,7 @@ class HTMLView {
 		
 	}
 	
-	public function echoHTML($HTMLBody) 
+	public function showHTML($HTMLBody) 
 	{
 		
 		echo '

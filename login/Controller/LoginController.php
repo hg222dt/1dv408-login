@@ -1,5 +1,7 @@
 <?php
 
+namespace controller;
+
 require_once("Model/Login.php");
 require_once("View/LoginView.php");
 
@@ -8,7 +10,7 @@ class LoginController
 	public function __construct()
 	{
 		$this->login = new \model\Login();
-		$this->view = new LoginView($this->login);
+		$this->view = new \view\LoginView($this->login);
 	}
 	
 	public function control()
@@ -23,11 +25,12 @@ class LoginController
 			{
 				$feedback = $this->login->logOutUser();
 				$this->view->removeCookies();
-				return $this->view->showLoginForm($feedback);
+				
+				$this->view->showLoginForm($feedback);
 			}
 			else
 			{
-				return $this->view->showLoggedInPage($feedback);	
+				$this->view->showLoggedInPage($feedback);	
 			}	
 		}
 		
@@ -39,7 +42,7 @@ class LoginController
 				$feedback = $this->login->authenticateUserWithCookies($this->view->getCookieUser(), $this->view->getCookiePassword());
 				if($this->login->userIsLoggedIn())
 				{
-					return $this->view->showLoggedInPage($feedback);
+					$this->view->showLoggedInPage($feedback);
 				}
 				else
 				{
@@ -61,11 +64,11 @@ class LoginController
 				//om användaren har rätt lösenord
 				if($this->login->userIsLoggedIn())
 				{
-					return $this->view->showLoggedInPage($feedback);
+					$this->view->showLoggedInPage($feedback);
 				}
 				
 			}	
-			return $this->view->showLoginForm($feedback);	
+			$this->view->showLoginForm($feedback);	
 		}
 	}
 }

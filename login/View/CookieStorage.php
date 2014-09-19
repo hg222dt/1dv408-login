@@ -5,7 +5,6 @@ namespace view;
 class CookieStorage
 {
 	private $expiration;
-	
 	private $cookieUser = "user";
 	private $cookiePassword = "password";
 	

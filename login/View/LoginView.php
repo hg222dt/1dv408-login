@@ -19,17 +19,20 @@ class LoginView
 		$this->html = new \view\HTMLView();
 	}
 	
+	//hämtar användare från formulär
 	public function getFormUser()
 	{
 		return $_POST["user"];
 	}
 	
+	//hämtar lösenord från formulär
 	public function getFormPassword()
 	{
 		$FormPassword = new \Model\Password($_POST["password"]);
 		return $FormPassword;
 	}
 	
+	//hämtar om användaren vill spara sin inloggning i en cookie
 	public function getFormStayLoggedIn()
 	{
 		if(isset($_POST["stayLoggedIn"]))
@@ -40,40 +43,47 @@ class LoginView
 		return false;
 	}
 	
+	//kollar om användaren har cookies för inloggning.
 	public function userHasCookies()
 	{
 		return $this->cookieStorage->userHasCookies();
 	}
 	
+	//hämtar namn från cookie
 	public function getCookieUser()
 	{
 		return $this->cookieStorage->getUser();
 	}
 	
+	//hämtar lösenord från cookie
 	public function getCookiePassword()
 	{
 		return $this->cookieStorage->getPassword();
 	}
 	
+	//hämtar utgångsdatumet för cookie
 	public function getCookieExpiration()
 	{
 		return $this->cookieStorage->getExpiration();
 	}
 	
+	//tar bort alla cookies
 	public function removeCookies()
 	{
 		$this->cookieStorage->removeCookies();
 	}
 	
+	//om användaren vill logga in(har postat formulär)
 	public function userLogsIn()
 	{
-		if(isset($_POST["user"]))
+		if(isset($_GET["login"]))
 		{
 			return true;
 		}
 		return false;
 	}
 
+	//om användaren har klickat på logga ut.
 	public function userLogsOut()
 	{
 		if(isset($_GET["logout"]))
@@ -99,6 +109,8 @@ class LoginView
         
 	}
 		
+	//skapar html-koden för kroppen till den inloggade sidan och skickar det till htmlview för utskrift.
+	//feedback-parametern är för meddelanden 
 	public function showLoggedInPage($feedback)
 	{
 		$body = '
@@ -114,7 +126,8 @@ class LoginView
 	}
 	
 	
-	
+	//skapar html-koden för kroppen till inloggingsformuläret och skickar det till htmlview för utskrift.
+	//feedback-parametern är för meddelanden 
 	public function showLoginForm($feedback)
 	{		
 		$body = ' 

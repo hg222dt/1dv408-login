@@ -4,7 +4,7 @@ namespace model;
 
 class SessionStorage
 {
-	
+	//sessionsvariablernas namn
 	private $sessionUser = "user";
 	private $sessionLoggedIn = "loggedIn";
 	private $sessionIP = "userIP";
@@ -15,6 +15,7 @@ class SessionStorage
 		session_start();
 	}
 	
+	//hämta namnet på användaren
 	public function getSessionUser()
 	{
 		if(isset($_SESSION[$this->sessionUser]))
@@ -24,16 +25,19 @@ class SessionStorage
 		return "";
 	}
 	
+	//sätt ett namn på användaren
 	public function setSessionUser($user)
 	{
 		$_SESSION[$this->sessionUser] = $user;
 	}
 	
+	//kollar om det finns en inloggningssession (att användaren är inloggad)
 	public function loggedInSessionExists()
 	{
 		return isset($_SESSION[$this->sessionLoggedIn]) && $_SESSION[$this->sessionLoggedIn] === true;
 	}
 	
+	//sätter en inloggningssession som inloggad.
 	public function setSessionAsLoggedIn()
 	{
 		$_SESSION[$this->sessionLoggedIn] = true;
@@ -43,11 +47,13 @@ class SessionStorage
 		$_SESSION[$this->sessionUserAgent] = $_SERVER["HTTP_USER_AGENT"];
 	}	
 	
+	//tar bort sessioner.
 	public function removeLoggedInSession()
 	{
 		session_destroy();
 	}
 	
+	//kollar så innehavaren av sessionen är samma som loggade in (jämför ip och webbläsare)
 	public function realSessionUser()
 	{		
 		if($_SESSION[$this->sessionIP] === $_SERVER["REMOTE_ADDR"] && $_SESSION[$this->sessionUserAgent] === $_SERVER["HTTP_USER_AGENT"])

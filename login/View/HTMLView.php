@@ -1,15 +1,11 @@
 <?php
 
 namespace view;
-	
+
+//En klass som skapar html-kroppen  	
 class HTMLView {
-	
-	private $HTMLBody ="";
-	
-	public function __construct() {
-		
-	}
-	
+
+	//Funktion som ritar ut html på sidan. Tar emot innehållet som parameter. 
 	public function showHTML($HTMLBody) 
 	{
 		

@@ -9,18 +9,20 @@ class CookieStorage
 	private $cookieUser = "user";
 	private $cookiePassword = "password";
 	
+	//konstruktorn sätter utgångstiden som ska gälla för kakor.
 	public function __construct()
 	{
 		//en månad f.r.o.m nu.
 		$this->expiration = time()+(60*60*24*30);
 	}
-	
+	//skapar en ny cookie med inloggningsdata
 	public function setNewLoginCookies($user, $password)
 	{
 		setcookie($this->cookieUser, $user, $this->expiration);
 		setcookie($this->cookiePassword,$password->getPassword(), $this->expiration);
 	}
 	
+	//kollar om användaren har några inloggningscookies
 	public function userHasCookies()
 	{
 		if(isset($_COOKIE[$this->cookieUser]) && isset($_COOKIE[$this->cookiePassword]))
@@ -30,14 +32,19 @@ class CookieStorage
 		return false;
 	}
 	
+	//hämta användarnamn från cookie
 	public function getUser()
 	{
 		return $_COOKIE[$this->cookieUser];
 	}
+	
+	//hämta lösenord från cookie
 	public function getPassword()
 	{
 		return $_COOKIE[$this->cookiePassword];
 	}
+	
+	//returnerar utgångsdatum
 	public function getExpiration()
 	{
 		return $this->expiration;

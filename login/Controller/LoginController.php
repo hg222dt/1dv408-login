@@ -54,6 +54,7 @@ class LoginController
 				else
 				{
 					$this->cookieStorage->removeCookies();
+					$this->view->showLoginForm($feedback);
 				}
 			}
 						

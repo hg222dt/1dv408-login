@@ -129,7 +129,6 @@ class Login
 				return "Inloggning lyckades via cookies";
 			}
 		}
-		
 		return "Felaktig information i cookie";
 	}
 	

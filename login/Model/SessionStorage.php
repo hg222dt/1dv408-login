@@ -6,6 +6,7 @@ class SessionStorage
 {
 	//sessionsvariablernas namn
 	private $sessionUser = "user";
+	private $sessionPassword = "password";
 	private $sessionLoggedIn = "loggedIn";
 	private $sessionIP = "userIP";
 	private $sessionUserAgent = "userAgent";
@@ -29,6 +30,21 @@ class SessionStorage
 	public function setSessionUser($user)
 	{
 		$_SESSION[$this->sessionUser] = $user;
+	}
+	
+	//hämta lösenord från session
+	public function getSessionPassword()
+	{
+		if(isset($_SESSION[$this->sessionPassword]))
+		{
+			return $_SESSION[$this->sessionPassword];
+		}
+		return "";		
+	}
+	
+	public function setSessionPassword($password)
+	{
+		$_SESSION[$this->sessionPassword] = $password;
 	}
 	
 	//kollar om det finns en inloggningssession (att användaren är inloggad)

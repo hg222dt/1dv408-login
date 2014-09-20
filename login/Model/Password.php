@@ -2,9 +2,10 @@
 
 namespace model;
 
+//klass som inte låter en få lösenordet i klartext
 class Password
 {
-	private $password;
+	private $password;	
 	
 	public function __construct($password)
 	{

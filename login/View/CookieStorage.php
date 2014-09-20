@@ -18,7 +18,7 @@ class CookieStorage
 	public function setNewLoginCookies($user, $password)
 	{
 		setcookie($this->cookieUser, $user, $this->expiration);
-		setcookie($this->cookiePassword,$password->getPassword(), $this->expiration);
+		setcookie($this->cookiePassword, $password->getPassword(), $this->expiration);
 	}
 	
 	//kollar om användaren har några inloggningscookies

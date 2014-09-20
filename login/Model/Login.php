@@ -3,6 +3,7 @@
 namespace model;
 
 require_once("Model/SessionStorage.php");
+require_once("Model/Password.php");
 
 class Login
 {
@@ -16,7 +17,7 @@ class Login
 		$this->loginSession = new \model\SessionStorage();
 	}
 	
-	//kollar om det finns en loginsession.
+	//kollar ifall det finns en session som visar att användaren har loggat in.
 	public function userIsLoggedIn()
 	{	
 		if($this->loginSession->loggedInSessionExists())
@@ -37,6 +38,11 @@ class Login
 		return $this->loginSession->getSessionUser();
 	}
 	
+	public function getPassword()
+	{
+		return $this->loginSession->getSessionPassword();
+	}
+	
 	//loggar ut användaren.
 	public function logOutUser()
 	{
@@ -53,8 +59,12 @@ class Login
 		//filen där registrerade användare samlas.
 		$existingUsers = file($this->usersFile);
 		
+		//lägg lösenordet i ett password-objekt.
+		$password = new \Model\Password($password);
+		
 		//sparar användarnamn i session
 		$this->loginSession->setSessionUser($user);
+		$this->loginSession->setSessionPassword($password);
 		
 		//användarnamn får inte vara tomt.
 		if($user === "")
@@ -63,7 +73,7 @@ class Login
 		}
 
 		//lösenord får inte vara tomt.
-		else if($password->getPassword() === "")
+		else if($password->passwordIsEmpty())
 		{
 			return "Lösenord saknas";
 		}
@@ -84,7 +94,7 @@ class Login
 				if($stayLoggedIn)
 				{
 					//ta bort gammal info från samma användare (om det finns).
-					$this->removeCookieUserFromFile($user, $password);
+					$this->removeCookieUserFromFile($user, $password->getPassword());
 					
 					$cookieUsers = fopen($this->cookieUsersFile, "a");
 					fwrite($cookieUsers, $user.":".$password->getPassword().":".$expiration."\n");
@@ -115,6 +125,7 @@ class Login
 				//loggar in
 				$this->loginSession->setSessionAsLoggedIn();
 				$this->loginSession->setSessionUser($user);
+				$this->loginSession->setSessionPassword($password);
 				return "Inloggning lyckades via cookies";
 			}
 		}

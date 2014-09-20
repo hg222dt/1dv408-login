@@ -2,7 +2,6 @@
 
 namespace view;
 
-require_once("Model/Password.php");
 require_once("View/CookieStorage.php");
 require_once("View/HTMLView.php");
 
@@ -12,10 +11,10 @@ class LoginView
 	private $cookieStorage;
 	private $html; 
 	
-	public function __construct($login)
+	public function __construct($login, $cookieStorage)
 	{
 		$this->login = $login;
-		$this->cookieStorage = new \view\CookieStorage();
+		$this->cookieStorage = $cookieStorage;
 		$this->html = new \view\HTMLView();
 	}
 	
@@ -28,8 +27,7 @@ class LoginView
 	//hämtar lösenord från formulär
 	public function getFormPassword()
 	{
-		$FormPassword = new \Model\Password($_POST["password"]);
-		return $FormPassword;
+		return $_POST["password"];
 	}
 	
 	//hämtar om användaren vill spara sin inloggning i en cookie
@@ -37,42 +35,12 @@ class LoginView
 	{
 		if(isset($_POST["stayLoggedIn"]))
 		{
-			$this->cookieStorage->setNewLoginCookies($this->getFormUser(), $this->getFormPassword());
+			//$this->cookieStorage->setNewLoginCookies($this->getFormUser(), $this->getFormPassword());
 			return true;
 		}
 		return false;
 	}
-	
-	//kollar om användaren har cookies för inloggning.
-	public function userHasCookies()
-	{
-		return $this->cookieStorage->userHasCookies();
-	}
-	
-	//hämtar namn från cookie
-	public function getCookieUser()
-	{
-		return $this->cookieStorage->getUser();
-	}
-	
-	//hämtar lösenord från cookie
-	public function getCookiePassword()
-	{
-		return $this->cookieStorage->getPassword();
-	}
-	
-	//hämtar utgångsdatumet för cookie
-	public function getCookieExpiration()
-	{
-		return $this->cookieStorage->getExpiration();
-	}
-	
-	//tar bort alla cookies
-	public function removeCookies()
-	{
-		$this->cookieStorage->removeCookies();
-	}
-	
+
 	//om användaren vill logga in(har postat formulär)
 	public function userLogsIn()
 	{
@@ -125,7 +93,6 @@ class LoginView
 		
 	}
 	
-	
 	//skapar html-koden för kroppen till inloggingsformuläret och skickar det till htmlview för utskrift.
 	//feedback-parametern är för meddelanden 
 	public function showLoginForm($feedback)
@@ -133,7 +100,7 @@ class LoginView
 		$body = ' 
 		<h2>Du är inte inloggad</h2>
 		<p>'.$feedback.'</p>
-		<form id="loginForm" method="post" action="index.php">
+		<form id="loginForm" method="post" action="index.php?login">
 			
 			<label>Användare:</label>
 			<input type="text" placeholder="Användarnamn" name="user" value="'.$this->login->getUserName().'" />

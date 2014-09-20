@@ -4,13 +4,15 @@ namespace controller;
 
 require_once("Model/Login.php");
 require_once("View/LoginView.php");
+require_once("View/CookieStorage.php");
 
 class LoginController
 {
 	public function __construct()
 	{
 		$this->login = new \model\Login();
-		$this->view = new \view\LoginView($this->login);
+		$this->cookieStorage = new \view\CookieStorage;
+		$this->view = new \view\LoginView($this->login, $this->cookieStorage);
 	}
 	
 	public function control()
@@ -24,7 +26,7 @@ class LoginController
 			if($this->view->userLogsOut())
 			{
 				$feedback = $this->login->logOutUser();
-				$this->view->removeCookies(); //tar bort eventuella cookies
+				$this->cookieStorage->removeCookies(); //tar bort eventuella cookies
 				
 				$this->view->showLoginForm($feedback);
 			}
@@ -38,10 +40,10 @@ class LoginController
 		else
 		{
 			//kollar om användaren har sparat sin inloggning
-			if($this->view->userHasCookies())
+			if($this->cookieStorage->userHasCookies())
 			{
 				//autentiserar medd cookies
-				$feedback = $this->login->authenticateUserWithCookies($this->view->getCookieUser(), $this->view->getCookiePassword());
+				$feedback = $this->login->authenticateUserWithCookies($this->cookieStorage->getUser(), $this->cookieStorage->getPassword());
 				
 				//om det gick att logga in...
 				if($this->login->userIsLoggedIn())
@@ -51,7 +53,7 @@ class LoginController
 				//om det var nåt fel på kakorna så tas de bort.
 				else
 				{
-					$this->view->removeCookies();
+					$this->cookieStorage->removeCookies();
 				}
 			}
 						
@@ -62,7 +64,7 @@ class LoginController
 				$formUser = $this->view->getFormUser();
 				$formPassword = $this->view->getFormPassword();
 				$formStayLoggedIn = $this->view->getFormStayLoggedIn();
-				$cookieExpiration = $this->view->getCookieExpiration();
+				$cookieExpiration = $this->cookieStorage->getExpiration();
 								
 				//autentiserar användaren 
 				$feedback = $this->login->authenticateUser($formUser, $formPassword, $formStayLoggedIn, $cookieExpiration);
@@ -70,6 +72,11 @@ class LoginController
 				//om användaren har rätt lösenord
 				if($this->login->userIsLoggedIn())
 				{
+					//cookies sparas om användaren har önskat det.
+					if($formStayLoggedIn)
+					{
+						$this->cookieStorage->setNewLoginCookies($this->login->getUserName(),$this->login->getPassword());
+					}
 					$this->view->showLoggedInPage($feedback);
 				}
 				

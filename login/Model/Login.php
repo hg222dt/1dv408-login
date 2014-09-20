@@ -4,10 +4,12 @@ namespace model;
 
 require_once("Model/SessionStorage.php");
 require_once("Model/Password.php");
+require_once("Model/FileHandler.php");
 
 class Login
 {
 	private $loginSession;
+	private $fileHandler;
 	
 	private $usersFile = "users.txt";
 	private $cookieUsersFile = "cookieUsers.txt";
@@ -15,6 +17,7 @@ class Login
 	public function __construct()
 	{
 		$this->loginSession = new \model\SessionStorage();
+		$this->fileHandler = new \model\FileHandler();
 	}
 	
 	//kollar ifall det finns en session som visar att användaren har loggat in.
@@ -55,10 +58,6 @@ class Login
 	//om användaren vill spara inloggningen i en cookie så sparas även denna informationen.
 	public function authenticateUser($user, $password, $stayLoggedIn, $expiration)
 	{
-		
-		//filen där registrerade användare samlas.
-		$existingUsers = file($this->usersFile);
-		
 		//lägg lösenordet i ett password-objekt.
 		$password = new \Model\Password($password);
 		
@@ -78,15 +77,9 @@ class Login
 			return "Lösenord saknas";
 		}
 		
-		//kollar varje rad i filen med användare:lösenord
-        foreach($existingUsers as $existingUser)
-        {
-            //delar upp raderna 
-            $userArr = explode(":",trim($existingUser));
-            
-            //returnerar true om användaren med lösenordet finns i filen
-            if($userArr[0] === $user && $userArr[1] === $password->getPassword() )
-            {
+		//letar igenom fil efter användare.
+		if ($this->fileHandler->userIsInFile($user, $password->getPassword(), $this->usersFile))
+		{
             	//inloggning med session
             	$this->loginSession->setSessionAsLoggedIn();		
 				
@@ -94,17 +87,17 @@ class Login
 				if($stayLoggedIn)
 				{
 					//ta bort gammal info från samma användare (om det finns).
-					$this->removeCookieUserFromFile($user, $password->getPassword());
+					$this->fileHandler->removeUserFromFile($user, $password->getPassword(), $this->cookieUsersFile);
 					
-					$cookieUsers = fopen($this->cookieUsersFile, "a");
-					fwrite($cookieUsers, $user.":".$password->getPassword().":".$expiration."\n");
+					//lägger in cookie-data i fil.
+					$this->fileHandler->addUserWithExpiration($user, $password->getPassword(), $expiration, $this->cookieUsersFile);					
 					
 					return "Inloggningen lyckades och vi kommer ihåg dig nästa gång";
 				}
-                return "Inloggningen lyckades";
-            }
-        }
-        return "Felaktigt användarnamn och/eller lösenord.";
+                return "Inloggningen lyckades";			
+		}		
+		return "Felaktigt användarnamn och/eller lösenord.";
+        
 	}
 	
 	//funktion som kontrollerar användaruppgifter i en kaka, och loggar in användare.
@@ -113,41 +106,17 @@ class Login
 		//filen för cookieanvändare.
 		$existingUsers = file($this->cookieUsersFile);
 		
-		//letar efter registrerade användare med samma namn/lösenord.
-		foreach($existingUsers as $existingUser)
+		//om användaren finns i filen och expiration inte gått ut.
+		if($this->fileHandler->userIsInFile($user, $password, $this->cookieUsersFile))
 		{
-			//delar upp raderna 
-            $userArr = explode(":",trim($existingUser));
-            
-			//namn/lösenord måste vara samma. Tiden för kakan får inte ha gått ut.
-			if($userArr[0] === $user && $userArr[1] === $password && $userArr[2] > time())
-			{
-				//loggar in
-				$this->loginSession->setSessionAsLoggedIn();
-				$this->loginSession->setSessionUser($user);
-				$this->loginSession->setSessionPassword($password);
-				return "Inloggning lyckades via cookies";
-			}
-		}
-		return "Felaktig information i cookie";
-	}
-	
-	//tar bort en kaka från register.
-	private function removeCookieUserFromFile($user, $password)
-	{
-		$existingUsers = file($this->cookieUsersFile);
-		$newFile = fopen("newFile.txt","a");
-		
-		foreach($existingUsers as $existingUser)
-		{
-			//delar upp raderna 
-            $userArr = explode(":",trim($existingUser));
+			//loggar in
+			$this->loginSession->setSessionAsLoggedIn();
+			$this->loginSession->setSessionUser($user);
+			$this->loginSession->setSessionPassword($password);
 			
-			if($userArr[0] !== $user && $userArr[1] !== $password)
-			{
-				fwrite($newFile, $existingUser."\n");
-			}
+			return "Inloggning lyckades via cookies";			
 		}
-		rename("newFile.txt", "cookieUsers.txt");
+
+		return "Felaktig information i cookie";
 	}
 }

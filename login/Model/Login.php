@@ -8,9 +8,15 @@ require_once("Model/FileHandler.php");
 
 class Login
 {
+	//för att en view ska kunna hämta feedback.
+	public $userLoggedOut;
+	public $userAttemptsLogin;
+	public $userAttemptsCookieLogin;
+		
 	private $loginSession;
 	private $fileHandler;
 	
+	///filnamn
 	private $usersFile = "users.txt";
 	private $cookieUsersFile = "cookieUsers.txt";
 	
@@ -18,6 +24,11 @@ class Login
 	{
 		$this->loginSession = new \model\SessionStorage();
 		$this->fileHandler = new \model\FileHandler();
+		
+		//default:false
+		$this->userLoggedOut = false;
+		$this->userAttemptsLogin = false;
+		$this->userAttemptsCookieLogin = false;
 	}
 	
 	//kollar ifall det finns en session som visar att användaren har loggat in.
@@ -39,6 +50,7 @@ class Login
 	public function getUserName()
 	{
 		return $this->loginSession->getSessionUser();
+		
 	}
 	
 	public function getPassword()
@@ -51,13 +63,15 @@ class Login
 	{
 		$this->loginSession->removeLoggedInSession();
 		
-		return "Du har nu loggat ut";
+		$this->userLoggedOut = true;
 	}
 	
 	//funktion som kollar ifall användare med angivet namn och lösenord finns registrerade.
 	//om användaren vill spara inloggningen i en cookie så sparas även denna informationen.
 	public function authenticateUser($user, $password, $stayLoggedIn, $expiration)
 	{
+		$this->userAttemptsLogin = true;
+		
 		//lägg lösenordet i ett password-objekt.
 		$password = new \Model\Password($password);
 		
@@ -66,15 +80,15 @@ class Login
 		$this->loginSession->setSessionPassword($password);
 		
 		//användarnamn får inte vara tomt.
-		if($user === "")
+		if(is_null($this->loginSession->getSessionUser()))
 		{
-			return "Användarnamn saknas";
+			return false;
 		}
 
 		//lösenord får inte vara tomt.
-		else if($password->passwordIsEmpty())
+		else if(is_null($this->loginSession->getSessionPassword()))
 		{
-			return "Lösenord saknas";
+			return false;
 		}
 		
 		//letar igenom fil efter användare.
@@ -86,23 +100,23 @@ class Login
 				//om användaren vill fortsätta vara inloggad. Cookie-info sparas separat.
 				if($stayLoggedIn)
 				{
-					//ta bort gammal info från samma användare (om det finns).
+					//ta bort gammal info från samma användare (om det finns). Lägger till en ny rad.
 					$this->fileHandler->removeUserFromFile($user, $password->getPassword(), $this->cookieUsersFile);
-					
-					//lägger in cookie-data i fil.
 					$this->fileHandler->addUserWithExpiration($user, $password->getPassword(), $expiration, $this->cookieUsersFile);					
 					
-					return "Inloggningen lyckades och vi kommer ihåg dig nästa gång";
+					return true;
 				}
-                return "Inloggningen lyckades";			
+                return true;			
 		}		
-		return "Felaktigt användarnamn och/eller lösenord.";
+		return false;
         
 	}
 	
 	//funktion som kontrollerar användaruppgifter i en kaka, och loggar in användare.
 	public function authenticateUserWithCookies($user, $password)
 	{
+		$this->userAttemptsCookieLogin = true;
+		
 		//filen för cookieanvändare.
 		$existingUsers = file($this->cookieUsersFile);
 		
@@ -114,9 +128,9 @@ class Login
 			$this->loginSession->setSessionUser($user);
 			$this->loginSession->setSessionPassword($password);
 			
-			return "Inloggning lyckades via cookies";			
+			return true;		
 		}
 
-		return "Felaktig information i cookie";
+		return false;
 	}
 }

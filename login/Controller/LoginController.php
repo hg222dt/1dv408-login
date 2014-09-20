@@ -17,22 +17,20 @@ class LoginController
 	
 	public function control()
 	{
-		$feedback = ""; 
-		
+
 		//användaren är inloggad
 		if($this->login->userIsLoggedIn())
 		{
 			//användaren vill logga ut
 			if($this->view->userLogsOut())
 			{
-				$feedback = $this->login->logOutUser();
-				$this->cookieStorage->removeCookies(); //tar bort eventuella cookies
-				
-				$this->view->showLoginForm($feedback);
+				//logga ut användare 
+				$this->login->logOutUser();		
+				$this->view->showLoginForm();
 			}
 			else
 			{
-				$this->view->showLoggedInPage($feedback);	
+				$this->view->showLoggedInPage();	
 			}	
 		}
 		
@@ -43,18 +41,18 @@ class LoginController
 			if($this->cookieStorage->userHasCookies())
 			{
 				//autentiserar medd cookies
-				$feedback = $this->login->authenticateUserWithCookies($this->cookieStorage->getUser(), $this->cookieStorage->getPassword());
+				$this->login->authenticateUserWithCookies($this->cookieStorage->getUser(), $this->cookieStorage->getPassword());
 				
 				//om det gick att logga in...
 				if($this->login->userIsLoggedIn())
 				{
-					$this->view->showLoggedInPage($feedback);
+					$this->view->showLoggedInPage();
 				}
 				//om det var nåt fel på kakorna så tas de bort.
 				else
 				{
 					$this->cookieStorage->removeCookies();
-					$this->view->showLoginForm($feedback);
+					$this->view->showLoginForm();
 				}
 			}
 						
@@ -68,7 +66,7 @@ class LoginController
 				$cookieExpiration = $this->cookieStorage->getExpiration();
 								
 				//autentiserar användaren 
-				$feedback = $this->login->authenticateUser($formUser, $formPassword, $formStayLoggedIn, $cookieExpiration);
+				$this->login->authenticateUser($formUser, $formPassword, $formStayLoggedIn, $cookieExpiration);
 				
 				//om användaren har rätt lösenord
 				if($this->login->userIsLoggedIn())
@@ -78,18 +76,18 @@ class LoginController
 					{
 						$this->cookieStorage->setNewLoginCookies($this->login->getUserName(),$this->login->getPassword());
 					}
-					$this->view->showLoggedInPage($feedback);
+					$this->view->showLoggedInPage();
 				}
 				
 				else
 				{
-					$this->view->showLoginForm($feedback);
+					$this->view->showLoginForm();
 				}	
 			}
 			
 			else
 			{
-				$this->view->showLoginForm($feedback);
+				$this->view->showLoginForm();
 			}	
 		}
 	}

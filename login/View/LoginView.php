@@ -18,6 +18,57 @@ class LoginView
 		$this->html = new \view\HTMLView();
 	}
 	
+	//funktion som generar feedback.
+	public function getFeedback()
+	{
+		//om användaren har loggat ut
+		if($this->login->userLoggedOut)
+		{
+			return "Du har nu loggat ut";
+		}
+		
+		//om användaren har försökt logga in(med formulär)
+		else if($this->login->userAttemptsLogin)
+		{
+			if($this->login->getUserName() === "")
+			{
+				return "Användarnamn saknas";
+			}
+			
+			if($this->login->getPassword()->getPassword() === "")
+			{
+				return "Lösenord saknas";
+			}
+			
+			//om inloggning lyckades
+			else if($this->login->userIsLoggedIn())
+			{		
+				if($this->getFormStayLoggedIn())
+				{
+					return "Inloggningen lyckades och vi kommer ihåg dig nästa gång";
+				}
+				
+				else if($this->cookieStorage->userHasCookies() === false)
+				{
+					return "Inloggningen lyckades";
+				}				
+			}
+			return "Felaktigt användarnamn och/eller lösenord.";			
+		}
+		
+		//om användaren har försökt logga in(med Cookies)
+		else if($this->login->userAttemptsCookieLogin)
+		{
+			//om inloggning lyckades
+			if($this->login->userIsLoggedIn())
+			{
+				return "Inloggning lyckades via cookies";	
+			}
+			return "Felaktig information i cookie";	
+		}
+		return "";
+	}
+	
 	//hämtar användare från formulär
 	public function getFormUser()
 	{
@@ -56,6 +107,7 @@ class LoginView
 	{
 		if(isset($_GET["logout"]))
 		{
+			$this->cookieStorage->removeCookies(); //tar bort eventuella cookies
 			return true;
 		}
 		return false;
@@ -79,11 +131,11 @@ class LoginView
 		
 	//skapar html-koden för kroppen till den inloggade sidan och skickar det till htmlview för utskrift.
 	//feedback-parametern är för meddelanden 
-	public function showLoggedInPage($feedback)
+	public function showLoggedInPage()
 	{
 		$body = '
 		<h2>'.$this->login->getUserName().' är inloggad</h2>
-		<p>'.$feedback.'</p>
+		<p>'.$this->getFeedback().'</p>
 		<p><a href="?logout">Logga ut</a></p>
 		'
 		.$this->showdatetime();
@@ -95,11 +147,11 @@ class LoginView
 	
 	//skapar html-koden för kroppen till inloggingsformuläret och skickar det till htmlview för utskrift.
 	//feedback-parametern är för meddelanden 
-	public function showLoginForm($feedback)
+	public function showLoginForm()
 	{		
 		$body = ' 
 		<h2>Du är inte inloggad</h2>
-		<p>'.$feedback.'</p>
+		<p>'.$this->getFeedback().'</p>
 		<form id="loginForm" method="post" action="index.php?login">
 			
 			<label>Användare:</label>

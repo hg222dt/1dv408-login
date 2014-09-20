@@ -41,10 +41,10 @@ class LoginController
 			if($this->cookieStorage->userHasCookies())
 			{
 				//autentiserar medd cookies
-				$this->login->authenticateUserWithCookies($this->cookieStorage->getUser(), $this->cookieStorage->getPassword());
+				$loggedin = $this->login->authenticateUserWithCookies($this->cookieStorage->getUser(), $this->cookieStorage->getPassword());
 				
 				//om det gick att logga in...
-				if($this->login->userIsLoggedIn())
+				if($loggedin)
 				{
 					$this->view->showLoggedInPage();
 				}
@@ -66,10 +66,10 @@ class LoginController
 				$cookieExpiration = $this->cookieStorage->getExpiration();
 								
 				//autentiserar användaren 
-				$this->login->authenticateUser($formUser, $formPassword, $formStayLoggedIn, $cookieExpiration);
+				$loggedin = $this->login->authenticateUser($formUser, $formPassword, $formStayLoggedIn, $cookieExpiration);
 				
 				//om användaren har rätt lösenord
-				if($this->login->userIsLoggedIn())
+				if($loggedin)
 				{
 					//cookies sparas om användaren har önskat det.
 					if($formStayLoggedIn)

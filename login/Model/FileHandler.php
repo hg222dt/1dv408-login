@@ -58,12 +58,35 @@ class FileHandler
 	    }
 		return false;
 	}
+
+	public function doesUsernameExist($username, $filename) {
+		$existingUsers = file($filename);
+		
+	    foreach($existingUsers as $existingUser)
+	    {
+	        //delar upp raderna 
+	        $userArr = explode(":",trim($existingUser));
+
+	        //returnerar true om användaren med lösenordet finns i filen
+	        if($userArr[0] === $username)
+	        {
+				return true;
+	        }
+
+	    }
+		return false;
+	}
 	
 	//lägger till användare med ett utgångsdatum
 	public function addUserWithExpiration($user, $password, $expiration, $filename)
 	{
 		$cookieUsers = fopen($filename, "a");
 		fwrite($cookieUsers, $user.":".$password.":".$expiration."\n");
-	}					
-					
+	}
+
+	//Lägger till användare i fil med registrerade användare
+	public function addUser($username, $password, $filename) {
+		$usersFile = fopen($filename, "a");
+		fwrite($usersFile, $username.":".md5($password));
+	}									
 }

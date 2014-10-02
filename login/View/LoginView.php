@@ -10,10 +10,12 @@ class LoginView
 	private $login;
 	private $cookieStorage;
 	private $html; 
+	private $userRegistration;
 	
-	public function __construct($login, $cookieStorage)
+	public function __construct($login, $cookieStorage, $userRegistration)
 	{
 		$this->login = $login;
+		$this->userRegistration = $userRegistration;
 		$this->cookieStorage = $cookieStorage;
 		$this->html = new \view\HTMLView();
 	}
@@ -69,6 +71,15 @@ class LoginView
 		return "";
 	}
 	
+	public function getRegistrationFeedback() {
+		//No username
+		//No password
+		//Short password
+		//Short username
+		//not nmatching passwords
+		//Username allready exists
+	}
+
 	//hämtar användare från formulär
 	public function getFormUser()
 	{
@@ -79,6 +90,10 @@ class LoginView
 	public function getFormPassword()
 	{
 		return $_POST["password"];
+	}
+
+	public function getFormRepeatedPassword() {
+		return $_POST["repeatedPassword"];
 	}
 	
 	//hämtar om användaren vill spara sin inloggning i en cookie
@@ -108,6 +123,20 @@ class LoginView
 		if(isset($_GET["logout"]))
 		{
 			$this->cookieStorage->removeCookies(); //tar bort eventuella cookies
+			return true;
+		}
+		return false;
+	}
+
+	public function didUserPressRegistrate() {
+		if(isset($_POST["userPressedRegistrate"])) {
+			return true;
+		}
+		return false;
+	}
+
+	public function didUserSendRegistration() {
+		if(isset($_POST['registrationFormPosted'])) {
 			return true;
 		}
 		return false;
@@ -144,6 +173,30 @@ class LoginView
 		$this->html->showHTML($body);
 		
 	}
+
+	public function showRegistrationForm() {
+		$body = ' 
+		<h2>Registrera ny användare</h2>
+		'.$this->getRegistrationFeedback().'
+		<form id="registrationForm" method="post" action="index.php?registration">
+			<label>Användarnamm:</label>
+			<input type="text" placeholder="Användarnamn" name="user" value="" />
+			
+			<label>Lösenord:</label>
+			<input type="password" placeholder="Lösenord" name="password" />
+			
+			<label>Upprepa lösenord:</label>
+			<input type="password" placeholder="Lösenord" name="repeatedPassword" />
+			
+			<input type="submit" value="Registrera" name="registrationFormPosted" />
+		</form>
+			
+		'
+		.$this->showdatetime();
+		;
+		
+		$this->html->showHTML($body);
+	}
 	
 	//skapar html-koden för kroppen till inloggingsformuläret och skickar det till htmlview för utskrift.
 	//feedback-parametern är för meddelanden 
@@ -152,8 +205,10 @@ class LoginView
 		$body = ' 
 		<h2>Du är inte inloggad</h2>
 		<p>'.$this->getFeedback().'</p>
+		<form method="post" action="">
+			<input type="submit" value="Registrera ny användare" name="userPressedRegistrate">
+		</form>
 		<form id="loginForm" method="post" action="index.php?login">
-			
 			<label>Användare:</label>
 			<input type="text" placeholder="Användarnamn" name="user" value="'.$this->login->getUserName().'" />
 			
@@ -165,6 +220,7 @@ class LoginView
 			
 			<input type="submit" value="Logga in" />
 		</form>
+			
 		'
 		.$this->showdatetime();
 		;

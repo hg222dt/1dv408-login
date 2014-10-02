@@ -5,6 +5,7 @@ namespace controller;
 require_once("Model/Login.php");
 require_once("View/LoginView.php");
 require_once("View/CookieStorage.php");
+require_once("model/userRegistration.php");
 
 class LoginController
 {
@@ -12,7 +13,9 @@ class LoginController
 	{
 		$this->login = new \model\Login();
 		$this->cookieStorage = new \view\CookieStorage;
-		$this->view = new \view\LoginView($this->login, $this->cookieStorage);
+		$this->userRegistration = new \model\userRegistration();
+		$this->view = new \view\LoginView($this->login, $this->cookieStorage, $this->userRegistration);
+
 	}
 	
 	public function control()
@@ -77,16 +80,35 @@ class LoginController
 						$this->cookieStorage->setNewLoginCookies($this->login->getUserName(),$this->login->getPassword());
 					}
 					$this->view->showLoggedInPage();
-				}
-				
-				else
+				} else
 				{
 					$this->view->showLoginForm();
 				}	
 			}
+			else if($this->view->didUserPressRegistrate()) {
+
+				$this->view->showRegistrationForm();
 			
-			else
-			{
+			} else if($this->view->didUserSendRegistration()) {
+				
+				// Check if user has input correct credentials.
+				// If correct, send credentials to registration.
+				// Forward the user to confirmation page or get faulty message
+
+				//hämtar info från formuläret
+				$formUsername = $this->view->getFormUser();
+				$formPassword = $this->view->getFormPassword();
+				$formRepeatedPassword = $this->view->getFormRepeatedPassword();
+								
+				//autentiserar användaren 
+				$userRegistrated = $this->userRegistration->confirmUserRegistration($formUsername, $formPassword, $formRepeatedPassword);
+
+				if($userRegistrated) {
+					$this->view->showLoginForm();
+				}
+
+
+			} else {
 				$this->view->showLoginForm();
 			}	
 		}

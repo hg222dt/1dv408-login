@@ -68,16 +68,16 @@ class LoginView
 			}
 			return "Felaktig information i cookie";	
 		}
+
+		else if($this->userRegistration->userCreatedAccount) {
+			$this->userRegistration->userCreatedAccount = false;
+			return "Registrering av ny användare lyckades.";
+		}
 		return "";
 	}
 	
 	public function getRegistrationFeedback() {
-		//No username
-		//No password
-		//Short password
-		//Short username
-		//not nmatching passwords
-		//Username allready exists
+		return $this->userRegistration->getFeedbackMsg();
 	}
 
 	//hämtar användare från formulär
@@ -177,17 +177,19 @@ class LoginView
 	public function showRegistrationForm() {
 		$body = ' 
 		<h2>Registrera ny användare</h2>
+		<a href="index.php">Tillbaka</a>
 		'.$this->getRegistrationFeedback().'
-		<form id="registrationForm" method="post" action="index.php?registration">
-			<label>Användarnamm:</label>
-			<input type="text" placeholder="Användarnamn" name="user" value="" />
-			
+		<form id="registrationForm" method="post" action="index.php">
+			<label>Namm:</label>
+			<input type="text" name="user" value="'.$this->userRegistration->getTempUserName().'" />
+			<br>
 			<label>Lösenord:</label>
-			<input type="password" placeholder="Lösenord" name="password" />
-			
-			<label>Upprepa lösenord:</label>
-			<input type="password" placeholder="Lösenord" name="repeatedPassword" />
-			
+			<input type="password" name="password" />
+			<br>
+			<label>Repetera lösenord:</label>
+			<input type="password" name="repeatedPassword" />
+			<br>
+			<label>Skicka:</label>
 			<input type="submit" value="Registrera" name="registrationFormPosted" />
 		</form>
 			

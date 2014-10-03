@@ -87,6 +87,6 @@ class FileHandler
 	//Lägger till användare i fil med registrerade användare
 	public function addUser($username, $password, $filename) {
 		$usersFile = fopen($filename, "a");
-		fwrite($usersFile, $username.":".md5($password));
+		fwrite($usersFile, "\n" . $username.":".md5($password));
 	}									
 }

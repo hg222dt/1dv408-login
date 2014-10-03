@@ -11,6 +11,8 @@ class CookieStorage
 	//konstruktorn sätter utgångstiden som ska gälla för kakor.
 	public function __construct()
 	{
+
+		$this->expiration = time()+(60);
 		//en månad f.r.o.m nu.
 		$this->expiration = time()+(60*60*24*30);
 	}

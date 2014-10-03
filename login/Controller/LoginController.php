@@ -105,6 +105,8 @@ class LoginController
 
 				if($userRegistrated) {
 					$this->view->showLoginForm();
+				} else {
+					$this->view->showRegistrationForm();
 				}
 
 

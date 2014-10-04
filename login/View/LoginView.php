@@ -178,6 +178,7 @@ class LoginView
 		$body = ' 
 		<h2>Registrera ny användare</h2>
 		<a href="index.php">Tillbaka</a>
+		<br>
 		'.$this->getRegistrationFeedback().'
 		<form id="registrationForm" method="post" action="index.php">
 			<label>Namm:</label>
@@ -212,10 +213,10 @@ class LoginView
 		</form>
 		<form id="loginForm" method="post" action="index.php?login">
 			<label>Användare:</label>
-			<input type="text" placeholder="Användarnamn" name="user" value="'.$this->login->getUserName().'" />
+			<input type="text" name="user" value="'.$this->login->getUserName().'" />
 			
 			<label>Lösenord:</label>
-			<input type="password" placeholder="Lösenord" name="password" />
+			<input type="password" name="password" />
 			
 			<label>Håll mig inloggad:</label>
 			<input type="checkbox" name="stayLoggedIn" value="checked" />

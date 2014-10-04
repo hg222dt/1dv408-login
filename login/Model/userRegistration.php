@@ -13,8 +13,11 @@ class userRegistration {
 	public $userCreatedAccount;
 	private $tempUsername;
 
-	public function __construct() {
+	private $login;
+
+	public function __construct($login) {
 		$this->fileHandler = new \model\FileHandler();
+		$this->login = $login;
 	}
 
 	public function getTempUsername() {
@@ -32,8 +35,7 @@ class userRegistration {
 	public function confirmUserRegistration($username, $password, $repeatPassword) {
 		//$password = new \model\Password($password); 
 
-		//användarnamn får inte vara tomt.
-
+		//användarnamn och lösenord är båda för korta
 		if(strlen($username) < 3 && strlen($password) < 6) {
 //			$this->feedbackMsg = "Användarnamnet måste bestå av minst 3 tecken.";
 
@@ -85,8 +87,9 @@ class userRegistration {
 		}
 
 		//Lösenorden matchar inte varandra
-		else if(strcmp($password, $repeatPassword) === 1) {
+		else if(strcmp($password, $repeatPassword) !== 0) {
 			$this->feedbackMsg = "Lösenorden matchar inte.";
+			$this->tempUsername = $username;
 			return false;
 		}
 
@@ -94,6 +97,7 @@ class userRegistration {
 		else {
 			$this->fileHandler->addUser($username, $password, $this->usersFile);
 			$this->userCreatedAccount = true;
+			$this->login->setSessionUser($username); 
 			return true;
 		}
 

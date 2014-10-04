@@ -65,6 +65,11 @@ class Login
 		
 		$this->userLoggedOut = true;
 	}
+
+	public function setSessionUser($username) {
+		//sparar användarnamn i session
+		$this->loginSession->setSessionUser($username);
+	}
 	
 	//funktion som kollar ifall användare med angivet namn och lösenord finns registrerade.
 	//om användaren vill spara inloggningen i en cookie så sparas även denna informationen.

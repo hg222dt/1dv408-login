@@ -13,7 +13,7 @@ class LoginController
 	{
 		$this->login = new \model\Login();
 		$this->cookieStorage = new \view\CookieStorage;
-		$this->userRegistration = new \model\userRegistration();
+		$this->userRegistration = new \model\userRegistration($this->login);
 		$this->view = new \view\LoginView($this->login, $this->cookieStorage, $this->userRegistration);
 
 	}
